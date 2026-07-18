@@ -1,7 +1,10 @@
 <script>
-	import { sponsors } from '$lib/sponsors.js';
+	import { currentSponsors, pastSponsors } from '$lib/sponsors.js';
+	import { fade } from 'svelte/transition';
 
 	export const prerender = true;
+
+	let showPastContributors = false;
 </script>
 
 <div class="flex min-h-screen items-center justify-center">
@@ -21,16 +24,45 @@
 		</p>
 
 		<div class="mx-auto max-w-md md:max-w-lg lg:max-w-xl">
-			<h2 class="mb-4 text-2xl font-semibold">Sponsors</h2>
+			<h2 class="mb-4 text-2xl font-semibold">Current contributors</h2>
 
 			<p class="text-lg">
-				{#each sponsors as sponsor, i}
+				{#each currentSponsors as sponsor, i}
 					{#if sponsor.url}<a href={sponsor.url} class="inline-block underline hover:no-underline"
 							>{sponsor.name}</a
 						>{:else}<span class="inline-block">{sponsor.name}</span
-						>{/if}{#if i < sponsors.length - 1},{' '}{/if}
+						>{/if}{#if i < currentSponsors.length - 1},{' '}{/if}
 				{/each}
 			</p>
+
+			<div class="relative mt-8 opacity-60">
+				<button
+					class="cursor-pointer text-lg font-semibold"
+					aria-expanded={showPastContributors}
+					aria-controls="past-contributors"
+					onclick={() => (showPastContributors = !showPastContributors)}
+				>
+					Past contributors
+				</button>
+
+				{#if showPastContributors}
+					<div
+						id="past-contributors"
+						class="absolute left-0 top-full z-10 w-full pt-4"
+						transition:fade={{ duration: 200 }}
+					>
+						<p class="text-base">
+							{#each pastSponsors as sponsor, i}
+								{#if sponsor.url}<a
+										href={sponsor.url}
+										class="inline-block underline hover:no-underline">{sponsor.name}</a
+									>{:else}<span class="inline-block">{sponsor.name}</span
+									>{/if}{#if i < pastSponsors.length - 1},{' '}{/if}
+							{/each}
+						</p>
+					</div>
+				{/if}
+			</div>
 		</div>
 	</div>
 </div>
